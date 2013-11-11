@@ -54,17 +54,17 @@ with Matchers {
       //Stop the recorder immeidately, to avoid kabooms
       recorder.stop()
 
-      response.status.code should equal(200)
-      response.body.asString should equal("Hey look some text: BUTTS")
-
-
+      //lets check the tape problem first, because it shouldn't have changed.
       if(startGoogleTapeSum.isDefined) {
         //Validate that the tape has not been modified, since we're playing back
-        val endGoogleTapeSum = md5SumTestTape(tapeName)
+        val endGoogleTapeSum = md5SumTestTape(tapeName).get
 
         endGoogleTapeSum should equal(startGoogleTapeSum.get)
       }
 
+      //Now we can validate our response
+      response.status.code should equal(200)
+      response.body.asString should equal("Hey look some text: BUTTS")
     }
 
   }
