@@ -14,7 +14,7 @@ interactions:
       Content-Type: text/plain
       Host: httpbin.org
       User-Agent: Java/1.7.0_45
-    body: BUTTS
+    body: "BUTTS"
   response:
     status: 200
     headers:
