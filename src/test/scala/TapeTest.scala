@@ -34,7 +34,7 @@ with Matchers
       val response = client.get(url)
 
       response.status.code should equal(200)
-      response.body.toString should equal("Hey look some text")
+      response.body.asString should equal("Hey look some text")
 
       recorder.stop()
 
