@@ -1,6 +1,7 @@
 import co.freeside.betamax.{TapeMode, Recorder, ProxyConfiguration}
 import java.io.File
 import java.net.URL
+import org.apache.commons.codec.digest.DigestUtils
 import org.scalatest.{Matchers, FunSpec}
 import uk.co.bigbeeconsultants.http.{HttpClient, Config}
 
@@ -38,7 +39,14 @@ with Matchers
       recorder.stop()
 
       //Validate that the tape has not been modified, since we're playing back
+      val googleTapemd5sum = "b0770ac83863c69bd300a1d320d83acb"
 
+      //Calculate the md5sum of the googletape again, and it should be the same
+      val googleTapeStream = getClass.getResourceAsStream("/betamax/tapes/googletape.yaml")
+
+      val calculated = DigestUtils.md5Hex(googleTapeStream)
+
+      calculated should equal(googleTapemd5sum)
     }
 
   }
