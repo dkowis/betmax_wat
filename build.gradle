@@ -14,11 +14,6 @@ repositories {
         name "scala tools repo"
         url "http://scala-tools.org/repo-releases"
     }
-    maven {
-        name "Spray.io Repo"
-        url "http://repo.spray.io"
-    }
-
 }
 
 project.ext {
@@ -29,7 +24,7 @@ project.ext {
 
     beeclient = "uk.co.bigbeeconsultants:bee-client_${scalaLibVersion}:0.24.0"
     logbackClassic = "ch.qos.logback:logback-classic:1.0.13"
-    betamax = "co.freeside:betamax-proxy:2.0-SNAPSHOT"
+    betamax = "co.freeside.betamax:betamax-proxy:2.0-SNAPSHOT"
     scalaTest = "org.scalatest:scalatest_${scalaLibVersion}:2.0"
     commonsCodec = 'commons-codec:commons-codec:1.8'
 
@@ -47,6 +42,7 @@ configurations {
     //We have logback handling all this for us
     all*.exclude group: 'log4j', module: 'log4j'
     all*.exclude group: 'org.slf4j', module: 'slf4j-log4j12'
+
 }
 
 
