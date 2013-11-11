@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
+        <resetJUL>true</resetJUL>
+    </contextListener>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <target>System.out</target>
+        <encoder>
+            <pattern>%date{MM/dd HH:mm:ss} %-5level[%thread] %logger{1} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="akka" level="INFO"/>
+    <!-- have the netty be quiet -->
+    <logger name="com.ning.http" level="INFO"/>
+
+    <!-- betamax 2.0 has different things -->
+    <logger name="org.littleshoot" level="INFO"/>
+    <logger name="com.barchart.udt" level="INFO" />
+
+    <logger name="co.freeside" level="DEBUG"/>
+
+    <!-- our stuff! -->
+    <logger name="rackspace" level="DEBUG"/>
+
+    <root level="DEBUG">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+
+</configuration>
