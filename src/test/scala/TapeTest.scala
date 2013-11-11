@@ -8,21 +8,26 @@ import uk.co.bigbeeconsultants.http.request.RequestBody
 import uk.co.bigbeeconsultants.http.{HttpClient, Config}
 
 class TapeTest extends FunSpec
-with Matchers
- {
+with Matchers {
 
-  def md5SumGoogleTape():String = {
-    val googleTapeStream = getClass.getResourceAsStream("/betamax/tapes/googletape.yaml")
-    val value = DigestUtils.md2Hex(googleTapeStream)
-    googleTapeStream.close
-    value
+  val tapeName = "httpbinTape"
+
+  def md5SumTestTape(name: String): Option[String] = {
+    val googleTapeStream = getClass.getResourceAsStream(s"/betamax/tapes/${name}.yaml")
+    if (googleTapeStream != null) {
+      val value = DigestUtils.md2Hex(googleTapeStream)
+      googleTapeStream.close
+      Some(value)
+    } else {
+      None
+    }
   }
 
 
   describe("Proxy Testing with a tape") {
     it("Doesn't change the tape when replaying an HTTPS connection") {
 
-      val startGoogleTapeSum = md5SumGoogleTape()
+      val startGoogleTapeSum = md5SumTestTape(tapeName)
 
       val tapeRoot = new File("src/test/resources/betamax/tapes")
       val configBuilder = ProxyConfiguration.builder()
@@ -33,7 +38,7 @@ with Matchers
       val proxyConfig = configBuilder.build
       val recorder = new Recorder(proxyConfig)
 
-      recorder.start("googletape")
+      recorder.start(tapeName)
 
       val conf = Config(
         sslSocketFactory = Some(SSLValidation.socketFactory),
@@ -41,20 +46,25 @@ with Matchers
         proxy = None
       )
       val client = new HttpClient(conf)
-      val url = new URL("https://www.google.com/test")
+      val url = new URL("https://httpbin.org/post")
       val postPayload = "BUTTS"
 
-      val response = client.post(url, Some(RequestBody(postPayload,MediaType.TEXT_PLAIN)))
+      val response = client.post(url, Some(RequestBody(postPayload, MediaType.TEXT_PLAIN)))
+
+      //Stop the recorder immeidately, to avoid kabooms
+      recorder.stop()
 
       response.status.code should equal(200)
       response.body.asString should equal("Hey look some text: BUTTS")
 
-      recorder.stop()
 
-      //Validate that the tape has not been modified, since we're playing back
-      val endGoogleTapeSum = md5SumGoogleTape()
+      if(startGoogleTapeSum.isDefined) {
+        //Validate that the tape has not been modified, since we're playing back
+        val endGoogleTapeSum = md5SumTestTape(tapeName)
 
-      endGoogleTapeSum should equal(startGoogleTapeSum)
+        endGoogleTapeSum should equal(startGoogleTapeSum.get)
+      }
+
     }
 
   }
